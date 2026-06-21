@@ -1,0 +1,1 @@
+{"name":"Airline Agent Presence Trainer","description":"An AI-powered real-time professionalism, facial expression, and posture feedback application using MediaPipe and Gemini for aviation customer service training.","requestFramePermissions":["camera"],"majorCapabilities":["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]}

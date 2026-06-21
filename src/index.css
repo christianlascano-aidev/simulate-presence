@@ -1,0 +1,24 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Space Grotesk", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+  /* Custom airline palette colors */
+  --color-airline-navy: #0B2046;
+  --color-airline-gold: #D4AF37;
+  --color-airline-gold-hover: #C5A028;
+  --color-airline-blue-sky: #1D4ED8;
+}
+
+@layer utilities {
+  /* Glowing effects */
+  .glow-gold {
+    box-shadow: 0 0 15px rgba(212, 175, 55, 0.25);
+  }
+  .glow-navy {
+    box-shadow: 0 0 20px rgba(11, 32, 70, 0.4);
+  }
+}
