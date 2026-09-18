@@ -39,7 +39,7 @@ export default function SessionHistory({ logs, onClearHistory }: Props) {
       return logs.map((log, idx) => ({
         index: `Run #${idx + 1}`,
         "Overall Score": log.overallScore,
-        "Posture": log.poseScore,
+        "Posture": log.postureScore,
         "Expression": log.facialScore,
         "Grooming": log.groomingScore,
       }));
@@ -195,7 +195,7 @@ export default function SessionHistory({ logs, onClearHistory }: Props) {
                 {logs.map((log, idx) => (
                   <tr key={log.id} className="hover:bg-slate-950/30">
                     <td className="py-3 px-3 text-slate-400">{log.timestamp}</td>
-                    <td className="py-3 px-3 text-center text-cyan-400 font-semibold">{log.poseScore}%</td>
+                    <td className="py-3 px-3 text-center text-cyan-400 font-semibold">{log.postureScore}%</td>
                     <td className="py-3 px-3 text-center text-pink-400 font-semibold">{log.facialScore}%</td>
                     <td className="py-3 px-3 text-center text-amber-400 font-semibold">{log.groomingScore}%</td>
                     <td className="py-3 px-3 text-center font-bold">
