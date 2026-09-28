@@ -185,7 +185,7 @@ Output findings in the required JSON schema structure, specifying compliance sta
 
     try {
       const response = await ai.models.generateContent({
-        model: "gemini-2.5-flash",
+        model: "gemini-1.5-flash",
         contents: [{ inlineData: { mimeType, data: base64Data } }, { text: finalPrompt }],
         config: { responseMimeType: "application/json", responseSchema: config.schema, temperature: 0.2 },
       });
