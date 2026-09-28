@@ -73,7 +73,12 @@ export const InteractionScreen: React.FC<Props> = ({
     resetPoseGlobals();
     setIsSessionStarted(true);
     addMessage('system', `Session started — ${settings.scenarioType}`);
-    await startSession(systemPrompt, gender);
+
+    try {
+      await startSession(systemPrompt, gender);
+    } catch (err: any) {
+      addMessage('system', `⚠️ Voice connection failed: ${err?.message || 'Unknown error'}. Presence tracking is still active.`);
+    }
 
     // Timer
     const startTime = Date.now();
@@ -88,7 +93,7 @@ export const InteractionScreen: React.FC<Props> = ({
       allSnapshotsRef.current.push(snap);
       onAddSnapshot(snap);
     }, 5000);
-  }, [settings, startSession, addMessage, onAddSnapshot]);
+  }, [settings, activeFlow, startSession, addMessage, onAddSnapshot]);
 
   // Grooming countdown
   useEffect(() => {

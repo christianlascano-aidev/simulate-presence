@@ -6,6 +6,7 @@ interface Props {
   flows: InteractionFlow[];
   onStart: (settings: SimulationSettings) => void;
   onNavigateToHub: () => void;
+  onNavigateToHistory: () => void;
 }
 
 const SCENARIOS: Record<IndustryProfile, string[]> = {
@@ -44,7 +45,7 @@ const SCENARIOS: Record<IndustryProfile, string[]> = {
 const PROFILE_ICONS: Record<IndustryProfile, string> = { airline: '✈️', bank: '🏦', generic: '🏢' };
 const PROFILE_LABELS: Record<IndustryProfile, string> = { airline: 'Airline', bank: 'Bank', generic: 'Generic' };
 
-export const SetupScreen: React.FC<Props> = ({ photos, flows, onStart, onNavigateToHub }) => {
+export const SetupScreen: React.FC<Props> = ({ photos, flows, onStart, onNavigateToHub, onNavigateToHistory }) => {
   const [settings, setSettings] = useState<SimulationSettings>({
     agentName: '',
     profile: 'airline',
@@ -90,9 +91,14 @@ export const SetupScreen: React.FC<Props> = ({ photos, flows, onStart, onNavigat
             <h1 className="setup-title">Training Setup</h1>
             <p className="setup-subtitle" style={{ marginBottom: 0 }}>Configure your face-to-face interaction simulation session</p>
           </div>
-          <button className="btn btn-ghost btn-sm" onClick={onNavigateToHub} style={{ fontSize: 11 }}>
-            ⚙️ Reference Hub
-          </button>
+          <div style={{ display: 'flex', gap: 8 }}>
+            <button className="btn btn-ghost btn-sm" onClick={onNavigateToHistory} style={{ fontSize: 11 }}>
+              📊 History
+            </button>
+            <button className="btn btn-ghost btn-sm" onClick={onNavigateToHub} style={{ fontSize: 11 }}>
+              ⚙️ Reference Hub
+            </button>
+          </div>
         </div>
 
         {/* Industry Profile */}

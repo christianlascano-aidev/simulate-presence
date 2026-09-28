@@ -4,6 +4,3 @@ dist
 .vscode
 .antigravity
 *.log
-Dockerfile
-.dockerignore
-.gcloudignore

@@ -2,13 +2,15 @@ import React, { useEffect, useRef, useState, useCallback } from 'react';
 import {
   SimulationSettings, PoseMetrics, FacialMetrics, GroomingMetrics,
   Message, PresenceSnapshot, FeedbackData, ReferencePhoto, InteractionFlow,
+  SessionHistoryLog,
 } from './types';
-import { evaluatePose, evaluateFacial, buildFeedbackPrompt, computePresenceSummary, computeOverallScore, parseGeminiJsonResponse } from './utils';
+import { evaluatePose, evaluateFacial, buildFeedbackPrompt, computePresenceSummary, computeOverallScore, parseGeminiJsonResponse, derivePostureScore, deriveFacialScore } from './utils';
 import { SetupScreen } from './components/SetupScreen';
 import { PreCheckScreen } from './components/PreCheckScreen';
 import { InteractionScreen } from './components/InteractionScreen';
 import { FeedbackScreen } from './components/FeedbackScreen';
 import { ReferenceHub } from './components/ReferenceHub';
+import SessionHistory from './components/SessionHistory';
 import './index.css';
 
 declare const window: Window & {
@@ -18,7 +20,7 @@ declare const window: Window & {
   FACEMESH_RIGHT_EYE: any; FACEMESH_LEFT_EYE: any; FACEMESH_LIPS: any;
 };
 
-type Screen = 'setup' | 'precheck' | 'interaction' | 'feedback' | 'loading-feedback' | 'reference-hub';
+type Screen = 'setup' | 'precheck' | 'interaction' | 'feedback' | 'loading-feedback' | 'reference-hub' | 'history';
 
 export default function App() {
   const [screen, setScreen] = useState<Screen>('setup');
@@ -26,6 +28,18 @@ export default function App() {
   const [feedbackData, setFeedbackData] = useState<FeedbackData | null>(null);
   const [feedbackError, setFeedbackError] = useState<string | null>(null);
   const [sessionDuration, setSessionDuration] = useState('00:00:00');
+
+  // Session history
+  const [sessionHistory, setSessionHistory] = useState<SessionHistoryLog[]>(() => {
+    try {
+      const saved = localStorage.getItem('sp_session_history');
+      return saved ? JSON.parse(saved) : [];
+    } catch { return []; }
+  });
+
+  useEffect(() => {
+    localStorage.setItem('sp_session_history', JSON.stringify(sessionHistory));
+  }, [sessionHistory]);
 
   // Reference Hub configurations
   const [referencePhotos, setReferencePhotos] = useState<ReferencePhoto[]>(() => {
@@ -243,6 +257,26 @@ export default function App() {
       };
 
       setFeedbackData(fullFeedback);
+
+      // Save to session history
+      const historyEntry: SessionHistoryLog = {
+        id: Date.now().toString(),
+        timestamp: new Date().toLocaleString(),
+        profile: settings!.profile,
+        scenario: settings!.scenarioType,
+        duration,
+        communicationScore: commScore,
+        postureScore: presenceSummary.postureAvg,
+        facialScore: presenceSummary.facialAvg,
+        groomingScore: presenceSummary.groomingAvg,
+        presenceScore: presScore,
+        overallScore: fullFeedback.overall_score,
+        suggestions: Object.values(parsed.communication || {})
+          .flatMap((c: any) => c.improvement || [])
+          .slice(0, 3),
+      };
+      setSessionHistory(prev => [...prev, historyEntry]);
+
       setScreen('feedback');
     } catch (err: any) {
       setFeedbackError(err.message);
@@ -273,7 +307,29 @@ export default function App() {
             flows={interactionFlows}
             onStart={(s) => { setSettings(s); setScreen('precheck'); }} 
             onNavigateToHub={() => setScreen('reference-hub')}
+            onNavigateToHistory={() => setScreen('history')}
           />
+        </div>
+      )}
+
+      {screen === 'history' && (
+        <div className="sp-main" style={{ overflow: 'auto' }}>
+          <div className="sp-header">
+            <div className="sp-header-logo">
+              <span className="sp-header-logo-icon">📊</span>
+              <div>
+                <div className="sp-header-title">TRAINING HISTORY</div>
+                <div className="sp-header-subtitle">{sessionHistory.length} sessions recorded</div>
+              </div>
+            </div>
+            <button className="btn btn-ghost btn-sm" onClick={() => setScreen('setup')}>← Back to Setup</button>
+          </div>
+          <div style={{ padding: 24 }}>
+            <SessionHistory
+              logs={sessionHistory}
+              onClearHistory={() => setSessionHistory([])}
+            />
+          </div>
         </div>
       )}
 

@@ -132,7 +132,7 @@ Output findings in a JSON object with this EXACT structure:
 
     try {
       const response = await ai.models.generateContent({
-        model: "gemini-2.0-flash",
+        model: "gemini-2.5-flash",
         contents: [{ inlineData: { mimeType, data: base64Data } }, { text: prompt }],
         config: { responseMimeType: "application/json", temperature: 0.2 },
       });
@@ -185,7 +185,7 @@ Output findings in the required JSON schema structure, specifying compliance sta
 
     try {
       const response = await ai.models.generateContent({
-        model: "gemini-2.0-flash",
+        model: "gemini-2.5-flash",
         contents: [{ inlineData: { mimeType, data: base64Data } }, { text: finalPrompt }],
         config: { responseMimeType: "application/json", responseSchema: config.schema, temperature: 0.2 },
       });
@@ -300,7 +300,7 @@ app.post("/api/feedback", async (req, res) => {
     const ai = getAI();
     try {
       const response = await ai.models.generateContent({
-        model: "gemini-2.0-flash",
+        model: "gemini-2.5-flash",
         contents: [{ text: prompt }],
         config: { responseMimeType: "application/json", temperature: 0.3 },
       });
@@ -321,6 +321,7 @@ app.post("/api/feedback", async (req, res) => {
 
 // ─── WebSocket Proxy — Gemini Live API ────────────────────────────────────────
 const LIVE_MODELS = [
+  "gemini-3.8-live",
   "gemini-2.5-flash-native-audio-latest",
   "gemini-2.5-flash-native-audio-preview-12-2025"
 ];
@@ -419,7 +420,7 @@ function setupWebSocketProxy(httpServer: ReturnType<typeof createHttpServer>) {
           const voiceName = msg.voiceGender === "male" ? "Charon" : "Aoede";
           await tryConnect(msg.systemPrompt, voiceName);
         } else if (msg.type === "audio" && geminiSession) {
-          geminiSession.sendRealtimeInput({ media: { data: msg.data, mimeType: "audio/pcm;rate=16000" } });
+          geminiSession.sendRealtimeInput([{ mimeType: "audio/pcm;rate=16000", data: msg.data }]);
         } else if (msg.type === "end" && geminiSession) {
           geminiSession.close();
           geminiSession = null;

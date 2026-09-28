@@ -2,8 +2,6 @@
 .gitignore
 node_modules/
 dist/
-Dockerfile
-.gcloudignore
 .vscode/
 .antigravity/
 *.log

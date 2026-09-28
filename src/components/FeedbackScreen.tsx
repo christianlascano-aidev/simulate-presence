@@ -191,25 +191,25 @@ export const FeedbackScreen: React.FC<Props> = ({ feedback, settings, duration, 
             <AreaChart data={chartData} margin={{ top: 0, right: 0, bottom: 0, left: -20 }}>
               <defs>
                 <linearGradient id="gPosture" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="var(--sky)" stopOpacity={0.3} />
-                  <stop offset="95%" stopColor="var(--sky)" stopOpacity={0} />
+                  <stop offset="5%" stopColor="#38bdf8" stopOpacity={0.3} />
+                  <stop offset="95%" stopColor="#38bdf8" stopOpacity={0} />
                 </linearGradient>
                 <linearGradient id="gFacial" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="var(--pink)" stopOpacity={0.3} />
-                  <stop offset="95%" stopColor="var(--pink)" stopOpacity={0} />
+                  <stop offset="5%" stopColor="#f472b6" stopOpacity={0.3} />
+                  <stop offset="95%" stopColor="#f472b6" stopOpacity={0} />
                 </linearGradient>
                 <linearGradient id="gGrooming" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="var(--gold)" stopOpacity={0.3} />
-                  <stop offset="95%" stopColor="var(--gold)" stopOpacity={0} />
+                  <stop offset="5%" stopColor="#D4AF37" stopOpacity={0.3} />
+                  <stop offset="95%" stopColor="#D4AF37" stopOpacity={0} />
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
-              <XAxis dataKey="time" tick={{ fontSize: 10, fill: 'var(--text-muted)' }} />
-              <YAxis domain={[0, 100]} tick={{ fontSize: 10, fill: 'var(--text-muted)' }} />
-              <Tooltip contentStyle={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 8, fontSize: 12 }} />
-              <Area type="monotone" dataKey="posture" stroke="var(--sky)" fill="url(#gPosture)" strokeWidth={2} name="Posture" />
-              <Area type="monotone" dataKey="facial" stroke="var(--pink)" fill="url(#gFacial)" strokeWidth={2} name="Facial" />
-              <Area type="monotone" dataKey="grooming" stroke="var(--gold)" fill="url(#gGrooming)" strokeWidth={2} name="Grooming" />
+              <XAxis dataKey="time" tick={{ fontSize: 10, fill: '#4a607f' }} />
+              <YAxis domain={[0, 100]} tick={{ fontSize: 10, fill: '#4a607f' }} />
+              <Tooltip contentStyle={{ background: '#111c32', border: '1px solid rgba(212,175,55,0.15)', borderRadius: 8, fontSize: 12 }} />
+              <Area type="monotone" dataKey="posture" stroke="#38bdf8" fill="url(#gPosture)" strokeWidth={2} name="Posture" />
+              <Area type="monotone" dataKey="facial" stroke="#f472b6" fill="url(#gFacial)" strokeWidth={2} name="Facial" />
+              <Area type="monotone" dataKey="grooming" stroke="#D4AF37" fill="url(#gGrooming)" strokeWidth={2} name="Grooming" />
             </AreaChart>
           </ResponsiveContainer>
         </div>
