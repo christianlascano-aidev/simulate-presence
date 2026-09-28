@@ -11,6 +11,8 @@ import { InteractionScreen } from './components/InteractionScreen';
 import { FeedbackScreen } from './components/FeedbackScreen';
 import { ReferenceHub } from './components/ReferenceHub';
 import SessionHistory from './components/SessionHistory';
+import { auth, loginWithGoogle, logoutUser, saveSessionData } from './firebase';
+import { onAuthStateChanged, User } from 'firebase/auth';
 import './index.css';
 
 declare const window: Window & {
@@ -28,6 +30,10 @@ export default function App() {
   const [feedbackData, setFeedbackData] = useState<FeedbackData | null>(null);
   const [feedbackError, setFeedbackError] = useState<string | null>(null);
   const [sessionDuration, setSessionDuration] = useState('00:00:00');
+  
+  // Firebase Auth State
+  const [user, setUser] = useState<User | null>(null);
+  const [authLoading, setAuthLoading] = useState(true);
 
   // Session history
   const [sessionHistory, setSessionHistory] = useState<SessionHistoryLog[]>(() => {
@@ -40,6 +46,13 @@ export default function App() {
   useEffect(() => {
     localStorage.setItem('sp_session_history', JSON.stringify(sessionHistory));
   }, [sessionHistory]);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+    });
+    return unsubscribe;
+  }, []);
 
   // Reference Hub configurations
   const [referencePhotos, setReferencePhotos] = useState<ReferencePhoto[]>(() => {
@@ -276,6 +289,9 @@ export default function App() {
           .slice(0, 3),
       };
       setSessionHistory(prev => [...prev, historyEntry]);
+
+      // Save to Firebase using the user's name
+      await saveSessionData(settings!.agentName, historyEntry);
 
       setScreen('feedback');
     } catch (err: any) {

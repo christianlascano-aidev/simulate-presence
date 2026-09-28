@@ -406,6 +406,17 @@ function setupWebSocketProxy(httpServer: ReturnType<typeof createHttpServer>) {
             },
           },
         });
+
+        // Inject an initial text turn so the AI customer speaks first
+        try {
+          geminiSession.sendClientContent({
+            turns: [{ role: "user", parts: [{ text: "Begin the roleplay now. Start the conversation as the customer." }] }],
+            turnComplete: true,
+          });
+          console.log(`[WS] Initial turn sent to Gemini to start conversation`);
+        } catch (e) {
+          console.error("[WS] Failed to send initial turn:", e);
+        }
       } catch (err: any) {
         console.warn(`[WS] Model ${model} failed: ${err.message}. Trying next...`);
         await tryConnect(systemPrompt, voiceName, modelIndex + 1);
@@ -420,7 +431,7 @@ function setupWebSocketProxy(httpServer: ReturnType<typeof createHttpServer>) {
           const voiceName = msg.voiceGender === "male" ? "Charon" : "Aoede";
           await tryConnect(msg.systemPrompt, voiceName);
         } else if (msg.type === "audio" && geminiSession) {
-          geminiSession.sendRealtimeInput([{ mimeType: "audio/pcm;rate=16000", data: msg.data }]);
+          geminiSession.sendRealtimeInput({ audio: { mimeType: "audio/pcm;rate=16000", data: msg.data } });
         } else if (msg.type === "end" && geminiSession) {
           geminiSession.close();
           geminiSession = null;
